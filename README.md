@@ -1,18 +1,18 @@
 # Projeto de Controlo de Trotinetes Elétricas 🛴🔋
 
-Este projeto consiste na simulação do controlo de um equipamento com cacifos para trotinetes elétricas, que permite ao utilizador realizar operações como **estacionar**, **alugar**, **consultar estado**, e acompanhar o **carregamento da bateria**.
+Este projeto consiste na simulação do controlo de um equipamento com cacifos para trotinetes elétricas. Permite ao utilizador executar operações como **estacionar**, **alugar**, **consultar o estado** e acompanhar o **carregamento da bateria** de cada trotinete.
 
-Foi desenvolvido em linguagem **C**, no contexto da unidade curricular de **Projeto de Controlo de um Equipamento (PCE)** da ESTSetúbal – IPS.
+O desenvolvimento foi realizado em **linguagem C**, no contexto da unidade curricular de **Projeto de Controlo de um Equipamento (PCE)** da ESTSetúbal – Instituto Politécnico de Setúbal.
 
 ---
 
-## 🎯 Objetivo do projeto
+## 🎯 Objetivos do projeto
 
-- Controlar localmente um sistema de 4 cacifos para trotinetes
-- Garantir persistência de estado entre execuções
-- Simular o processo de **carregamento automático**
-- Registar eventos com marca temporal
-- Servir de base para a ligação ao Arduino e Nexys2 (futuramente)
+- Controlar localmente um sistema de cacifos para trotinetes
+- Manter persistência do estado entre execuções
+- Simular o processo de **carregamento automático da bateria**
+- Registar eventos com **data e hora**
+- Servir como base de integração com **Arduino e Nexys2**
 
 ---
 
@@ -20,46 +20,46 @@ Foi desenvolvido em linguagem **C**, no contexto da unidade curricular de **Proj
 
 ### 🧭 Interface no terminal
 
-- Menu com as seguintes opções:
+- Menu com opções de:
   - Estacionar uma trotinete
   - Alugar uma trotinete
-  - Listar o estado de todas as trotinetes
+  - Listar o estado das trotinetes
   - Sair do programa
 
 ### 🔋 Simulação de carregamento
 
-- Sempre que uma trotinete é estacionada:
-  - A bateria aumenta automaticamente de 10 em 10%
+- Ao estacionar uma trotinete:
+  - A bateria é carregada automaticamente de 10 em 10%
   - É apresentada uma **barra de progresso no terminal**
-  - O processo é **registado no log**
-  - A bateria nunca ultrapassa os 100%
+  - Cada etapa é registada no log
+  - A carga é limitada a 100%
 
-### 📁 Persistência de dados
+### 📁 Persistência de dados (ficheiro JSON)
 
-- Utiliza um ficheiro `JSON` para guardar o estado das trotinetes:
+- O estado das trotinetes é guardado em `estado_trotinetes.json`:
   - Número
   - Nível de bateria
   - Estado (estacionada ou não)
-- Permite expandir o número de trotinetes sem alterar o código
+- O programa deteta automaticamente o número total de trotinetes
 
-### 📝 Registo de eventos (logs)
+### 📝 Registo de eventos (ficheiro de log)
 
-- Criação automática de ficheiro `logs.txt`
-- Inclui eventos com data e hora:
+- O ficheiro `logs.txt` é atualizado automaticamente com:
   - Estacionamento
   - Aluguer
-  - Carregamento (passo a passo)
+  - Início e progresso de carregamento
   - Carregamento concluído
+- Cada linha inclui data e hora do evento
 
 ---
 
 ## 📦 Ficheiros do projeto
 
-| Ficheiro                 | Descrição                                           |
-| ------------------------ | --------------------------------------------------- |
-| `main.c`                 | Código-fonte principal do programa                  |
-| `estado_trotinetes.json` | Ficheiro de dados com o estado atual das trotinetes |
-| `logs.txt`               | Ficheiro de log com os eventos registados           |
+| Ficheiro                 | Descrição                                     |
+| ------------------------ | --------------------------------------------- |
+| `main.c`                 | Código-fonte principal do programa            |
+| `estado_trotinetes.json` | Ficheiro de dados com o estado das trotinetes |
+| `logs.txt`               | Registo de eventos com data e hora            |
 
 ---
 
@@ -89,9 +89,8 @@ Trotinete 1 estacionada com sucesso!
 🔋 Bateria: [█████████ ] 90%
 🔋 Bateria: [██████████] 100%
 ✅ Trotinete 1 totalmente carregada!
-```
 
-## 📄 Exemplo de ficheiro logs.txt
+🧾 Exemplo de conteúdo do ficheiro logs.txt
 
 09-04-2025 16:30:05 - Trotinete 1 - Estacionada
 09-04-2025 16:30:06 - Trotinete 1 - Carregamento: 40% → 50%
@@ -99,27 +98,28 @@ Trotinete 1 estacionada com sucesso!
 09-04-2025 16:30:11 - Trotinete 1 - Carregamento: 90% → 100%
 09-04-2025 16:30:11 - Trotinete 1 - Carregamento concluído
 
-## 📄 Exemplo de ficheiro logs.txt
+📂 Exemplo de conteúdo do ficheiro estado_trotinetes.json
 
 [
-{
-"numeroTrotinete": 1,
-"nivelBateria": 100,
-"estadoEstacionamento": true
-},
-{
-"numeroTrotinete": 2,
-"nivelBateria": 100,
-"estadoEstacionamento": true
-},
-{
-"numeroTrotinete": 3,
-"nivelBateria": 50,
-"estadoEstacionamento": false
-},
-{
-"numeroTrotinete": 4,
-"nivelBateria": 20,
-"estadoEstacionamento": false
-}
+  {
+    "numeroTrotinete": 1,
+    "nivelBateria": 100,
+    "estadoEstacionamento": true
+  },
+  {
+    "numeroTrotinete": 2,
+    "nivelBateria": 100,
+    "estadoEstacionamento": true
+  },
+  {
+    "numeroTrotinete": 3,
+    "nivelBateria": 50,
+    "estadoEstacionamento": false
+  },
+  {
+    "numeroTrotinete": 4,
+    "nivelBateria": 20,
+    "estadoEstacionamento": false
+  }
 ]
+```

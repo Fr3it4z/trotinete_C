@@ -1,0 +1,21 @@
+08-04-2025 19:04:18 - Trotinete 3 - Alugada
+08-04-2025 19:04:27 - Trotinete 3 - Estacionada
+08-04-2025 19:04:28 - Trotinete 1 - Carregamento: 85% → 95%
+08-04-2025 19:04:29 - Trotinete 1 - Carregamento: 95% → 100%
+08-04-2025 19:04:29 - Trotinete 1 - Carregamento concluído
+08-04-2025 19:04:30 - Trotinete 3 - Carregamento: 50% → 60%
+08-04-2025 19:04:31 - Trotinete 3 - Carregamento: 60% → 70%
+08-04-2025 19:04:32 - Trotinete 3 - Carregamento: 70% → 80%
+08-04-2025 19:04:33 - Trotinete 3 - Carregamento: 80% → 90%
+08-04-2025 19:04:34 - Trotinete 3 - Carregamento: 90% → 100%
+08-04-2025 19:04:34 - Trotinete 3 - Carregamento concluído
+08-04-2025 19:04:35 - Trotinete 4 - Carregamento: 20% → 30%
+08-04-2025 19:04:36 - Trotinete 4 - Carregamento: 30% → 40%
+08-04-2025 19:04:37 - Trotinete 4 - Carregamento: 40% → 50%
+08-04-2025 19:04:38 - Trotinete 4 - Carregamento: 50% → 60%
+08-04-2025 19:04:39 - Trotinete 4 - Carregamento: 60% → 70%
+08-04-2025 19:04:40 - Trotinete 4 - Carregamento: 70% → 80%
+08-04-2025 19:04:41 - Trotinete 4 - Carregamento: 80% → 90%
+08-04-2025 19:04:42 - Trotinete 4 - Carregamento: 90% → 100%
+08-04-2025 19:04:42 - Trotinete 4 - Carregamento concluído
+08-04-2025 19:04:49 - Trotinete 3 - Alugada

@@ -1,0 +1,21 @@
+# Ficheiros de compilação
+*.o
+*.exe
+*.out
+trotinetes
+
+# Configurações locais do VS Code
+.vscode/
+launch.json
+tasks.json
+
+# Ficheiros temporários
+*.log
+*.tmp
+
+# Logs (opcional - descomenta se quiseres ignorar)
+# logs.txt
+
+# Ficheiros de sistema
+.DS_Store
+Thumbs.db

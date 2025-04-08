@@ -1,0 +1,22 @@
+[
+  {
+    "numeroTrotinete": 1,
+    "nivelBateria": 100,
+    "estadoEstacionamento": true
+  },
+  {
+    "numeroTrotinete": 2,
+    "nivelBateria": 100,
+    "estadoEstacionamento": true
+  },
+  {
+    "numeroTrotinete": 3,
+    "nivelBateria": 100,
+    "estadoEstacionamento": false
+  },
+  {
+    "numeroTrotinete": 4,
+    "nivelBateria": 100,
+    "estadoEstacionamento": true
+  }
+]

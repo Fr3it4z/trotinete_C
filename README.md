@@ -90,7 +90,7 @@ Trotinete 1 estacionada com sucesso!
 🔋 Bateria: [██████████] 100%
 ✅ Trotinete 1 totalmente carregada!
 
-🧾 Exemplo de conteúdo do ficheiro logs.txt
+## 🧾 Exemplo de conteúdo do ficheiro logs.txt
 
 09-04-2025 16:30:05 - Trotinete 1 - Estacionada
 09-04-2025 16:30:06 - Trotinete 1 - Carregamento: 40% → 50%
@@ -98,7 +98,7 @@ Trotinete 1 estacionada com sucesso!
 09-04-2025 16:30:11 - Trotinete 1 - Carregamento: 90% → 100%
 09-04-2025 16:30:11 - Trotinete 1 - Carregamento concluído
 
-📂 Exemplo de conteúdo do ficheiro estado_trotinetes.json
+## 📂 Exemplo de conteúdo do ficheiro estado_trotinetes.json
 
 [
 {

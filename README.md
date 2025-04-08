@@ -65,13 +65,13 @@ O desenvolvimento foi realizado em **linguagem C**, no contexto da unidade curri
 
 ## 💻 Exemplo de execução no terminal
 
-```plaintext
 --- Menu ---
+
 1. Estacionar trotinete
 2. Alugar trotinete
 3. Listar trotinetes
 4. Sair
-Escolha uma opção: 1
+   Escolha uma opção: 1
 
 --- Lista de Trotinetes ---
 Scooter Nº: 1
@@ -81,11 +81,11 @@ Estacionada: Não
 Digite o número da trotinete: 1
 Trotinete 1 estacionada com sucesso!
 ⏳ A carregar Trotinete 1...
-🔋 Bateria: [████      ] 40%
-🔋 Bateria: [█████     ] 50%
-🔋 Bateria: [██████    ] 60%
-🔋 Bateria: [███████   ] 70%
-🔋 Bateria: [████████  ] 80%
+🔋 Bateria: [████ ] 40%
+🔋 Bateria: [█████ ] 50%
+🔋 Bateria: [██████ ] 60%
+🔋 Bateria: [███████ ] 70%
+🔋 Bateria: [████████ ] 80%
 🔋 Bateria: [█████████ ] 90%
 🔋 Bateria: [██████████] 100%
 ✅ Trotinete 1 totalmente carregada!
@@ -101,25 +101,24 @@ Trotinete 1 estacionada com sucesso!
 📂 Exemplo de conteúdo do ficheiro estado_trotinetes.json
 
 [
-  {
-    "numeroTrotinete": 1,
-    "nivelBateria": 100,
-    "estadoEstacionamento": true
-  },
-  {
-    "numeroTrotinete": 2,
-    "nivelBateria": 100,
-    "estadoEstacionamento": true
-  },
-  {
-    "numeroTrotinete": 3,
-    "nivelBateria": 50,
-    "estadoEstacionamento": false
-  },
-  {
-    "numeroTrotinete": 4,
-    "nivelBateria": 20,
-    "estadoEstacionamento": false
-  }
+{
+"numeroTrotinete": 1,
+"nivelBateria": 100,
+"estadoEstacionamento": true
+},
+{
+"numeroTrotinete": 2,
+"nivelBateria": 100,
+"estadoEstacionamento": true
+},
+{
+"numeroTrotinete": 3,
+"nivelBateria": 50,
+"estadoEstacionamento": false
+},
+{
+"numeroTrotinete": 4,
+"nivelBateria": 20,
+"estadoEstacionamento": false
+}
 ]
-```

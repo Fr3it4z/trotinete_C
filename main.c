@@ -31,42 +31,50 @@ void registar_log_trotinete(int numero, const char *evento) {
     fprintf(log_file, "%s - Trotinete %d - %s\n", data_hora, numero, evento);
     fclose(log_file);
 }
+void simular_descarregamento(Trotinete *t, int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        if (!t[i].estadoEstacionamento && t[i].nivelBateria > 0) {
+            int antes = t[i].nivelBateria;
+
+            t[i].nivelBateria -= 5;
+            if (t[i].nivelBateria < 0)
+                t[i].nivelBateria = 0;
+
+            // Registo no log
+            char msg[64];
+            snprintf(msg, sizeof(msg), "Descarregamento: %d%% → %d%%", antes, t[i].nivelBateria);
+            registar_log_trotinete(t[i].numeroTrotinete, msg);
+        }
+    }
+}
 void simular_carregamento(Trotinete *t, int tamanho) {
     for (int i = 0; i < tamanho; i++) {
         if (t[i].estadoEstacionamento && t[i].nivelBateria < 100) {
             int antes = t[i].nivelBateria;
+            int nivelAtual = antes;
 
-            printf("⏳ A carregar Trotinete %d...\n", t[i].numeroTrotinete);
-            while (t[i].nivelBateria < 100) {
-                #ifdef _WIN32
-                    Sleep(1000); // Windows
-                #else
-                    sleep(1);    // Linux/macOS
-                #endif
-                t[i].nivelBateria += 10;
-                if (t[i].nivelBateria > 100) t[i].nivelBateria = 100;
+            printf("Trotinete %d em carregamento... (%d%%)\n", t[i].numeroTrotinete, nivelAtual);
 
-                // Log
+            while (nivelAtual < 100) {
+                int anterior = nivelAtual;
+                nivelAtual += 10;
+                if (nivelAtual > 100) nivelAtual = 100;
+
+                // Registo no log de cada passo
                 char msg[64];
-                snprintf(msg, sizeof(msg), "Carregamento: %d%% → %d%%", antes, t[i].nivelBateria);
+                snprintf(msg, sizeof(msg), "Carregamento: %d%% → %d%%", anterior, nivelAtual);
                 registar_log_trotinete(t[i].numeroTrotinete, msg);
-                antes = t[i].nivelBateria;
-
-                // Terminal: barra de progresso
-                printf("\r🔋 Bateria: [");
-                int blocos = t[i].nivelBateria / 10;
-                for (int b = 0; b < 10; b++) {
-                    printf(b < blocos ? "█" : " ");
-                }
-                printf("] %d%%", t[i].nivelBateria);
-                fflush(stdout);
             }
 
-            printf("\n✅ Trotinete %d totalmente carregada!\n", t[i].numeroTrotinete);
+            // Atualiza bateria no array
+            t[i].nivelBateria = 100;
+
+            // Log final
             registar_log_trotinete(t[i].numeroTrotinete, "Carregamento concluído");
         }
     }
 }
+
 
 
 int contar_trotinetes_no_json(const char *nomeFicheiro) {
@@ -108,11 +116,9 @@ int carregar_estado_json(Trotinete trotinete[], int maxTamanho) {
             sscanf(linha, " %*[^:]: %d,", &bateria);
             fgets(linha, sizeof(linha), ficheiro); // próxima linha: estadoEstacionamento
             sscanf(linha, " %*[^:]: %5s", estado);
-
             trotinete[count].numeroTrotinete = numero;
             trotinete[count].nivelBateria = bateria;
             trotinete[count].estadoEstacionamento = strcmp(estado, "true") == 0 ? true : false;
-
             count++;
         }
     }
@@ -167,6 +173,8 @@ void menu(Trotinete trotinete[], int tamanho) {
     int opcao, id;
 
     do {
+        simular_descarregamento(trotinete, tamanho);
+        simular_carregamento(trotinete, tamanho); 
         clear();
         printf("\n--- Menu ---\n");
         printf("1. Estacionar trotinete\n");
@@ -174,66 +182,97 @@ void menu(Trotinete trotinete[], int tamanho) {
         printf("3. Listar trotinetes\n");
         printf("4. Sair\n");
         printf("Escolha uma opção: ");
+
         if (scanf("%d", &opcao) != 1) {
             printf("Entrada inválida! Insira um número.\n");
-            while (getchar() != '\n'); // Limpa o buffer de entrada
+            while (getchar() != '\n'); // Limpa o buffer
             getchar();
             continue;
         }
-             
-
         clear();
-        if (opcao == 1 || opcao == 2) {
-            listarTrotinetes(trotinete, tamanho);
-            printf("Digite o número da trotinete: ");
-            scanf("%d", &id);
-            // Procurar a trotinete pelo número
-            int encontrada = 0;
-            for (int i = 0; i < tamanho; i++) {
-                if (trotinete[i].numeroTrotinete == id) {
-                    encontrada = 1;
-                    if (opcao == 1) { // Estacionar
-                        if (trotinete[i].estadoEstacionamento) {
-                            printf("Trotinete já estacionada.\n");
-                        } else {
-                            trotinete[i].estadoEstacionamento = true;
-                            printf("Trotinete %d estacionada com sucesso!\n", trotinete[i].numeroTrotinete);
-                            registar_log_trotinete(trotinete[i].numeroTrotinete, "Estacionada");
-                            simular_carregamento(trotinete, tamanho);
-                            guardar_estado_json(trotinete, tamanho);
-                        }
-                    } else if (opcao == 2) { // Alugar
-                        if (!trotinete[i].estadoEstacionamento) {
-                            printf("A trotinete %d não se encontra disponível.\n", trotinete[i].numeroTrotinete);
-                        } else {
-                            trotinete[i].estadoEstacionamento = false;
-                            printf("\n Trotinete %d alugada com sucesso!\n", trotinete[i].numeroTrotinete);
-                            registar_log_trotinete(trotinete[i].numeroTrotinete, "Alugada");
-                            guardar_estado_json(trotinete, tamanho);
+        switch (opcao) {
+            case 1: // Estacionar trotinete
+            case 2: // Alugar trotinete
+                listarTrotinetes(trotinete, tamanho);
+                char buffer[16];
+                bool entradaValida = false;
+                
+                do {
+                    printf("(9 para voltar ao menu)\n");
+                    printf("Digite o número da trotinete: ");
+                    scanf("%s", buffer);
+                
+                    entradaValida = true;
+                    for (int i = 0; buffer[i] != '\0'; i++) {
+                        if (buffer[i] < '0' || buffer[i] > '9') {
+                            entradaValida = false;
+                            break;
                         }
                     }
+                
+                    if (!entradaValida) {
+                        printf("Entrada inválida! Insira apenas números.\n");
+                    }
+                
+                } while (!entradaValida);
+                
+                id = atoi(buffer);
+                
+                // Novo: se for 9, volta ao menu
+                if (id == 9) {
+                    printf("Operação cancelada. A voltar ao menu...\n");
                     space();
                     break;
+                }                
+
+                for (int i = 0; i < tamanho; i++) {
+                    if (trotinete[i].numeroTrotinete == id) {
+                        if (opcao == 1) {
+                            if (trotinete[i].estadoEstacionamento) {
+                                printf("Trotinete já estacionada.\n");
+                            } else {
+                                trotinete[i].estadoEstacionamento = true;
+                                printf("Trotinete %d estacionada com sucesso!\n", trotinete[i].numeroTrotinete);
+                                registar_log_trotinete(trotinete[i].numeroTrotinete, "Estacionada");
+                                simular_carregamento(&trotinete[i], 1);
+                                guardar_estado_json(trotinete, tamanho);
+                            }
+                        } else {
+                            if (!trotinete[i].estadoEstacionamento) {
+                                printf("A trotinete %d não se encontra disponível.\n", trotinete[i].numeroTrotinete);
+                            } else {
+                                trotinete[i].estadoEstacionamento = false;
+                                printf("Trotinete %d alugada com sucesso!\n", trotinete[i].numeroTrotinete);
+                                registar_log_trotinete(trotinete[i].numeroTrotinete, "Alugada");
+                                guardar_estado_json(trotinete, tamanho);
+                            }
+                        }
+                        space();
+                        break;
+                    }
                 }
-            }
-            if (!encontrada) {
-                printf("Trotinete não encontrada!\n");
+                break;
+
+            case 3: // Listar trotinetes
+                listarTrotinetes(trotinete, tamanho);
                 space();
-                clear();
-            }
-        } else if (opcao == 3) {
-            listarTrotinetes(trotinete, tamanho);
-            space();
-        }else{printf("Opção inválida!");};
+                break;
+
+            case 4: // Sair
+                printf("A sair...\n");
+                break;
+
+            default:
+                printf("Opção inválida!\n");
+                space();
+                break;
+        }
 
     } while (opcao != 4);
-    if (opcao == 4){exit(0);}
-    
 }
 
 int main() {
     clear();
-
     #ifdef _WIN32
     system("chcp 65001 > nul");
     #endif

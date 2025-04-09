@@ -12,7 +12,7 @@
   {
     "numeroTrotinete": 3,
     "nivelBateria": 100,
-    "estadoEstacionamento": false
+    "estadoEstacionamento": true
   },
   {
     "numeroTrotinete": 4,

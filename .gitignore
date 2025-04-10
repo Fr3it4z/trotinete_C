@@ -1,13 +1,13 @@
 # Ficheiros de compilação
 *.o
-# *.exe
+*.exe
 *.out
 trotinetes
 
 # Configurações locais do VS Code
-# .vscode/
-#launch.json
-#tasks.json
+.vscode/
+launch.json
+tasks.json
 
 # Ficheiros temporários
 *.log

@@ -1,0 +1,5 @@
+10-04-2025 06:46:45 - Trotinete 3 - Alugada
+10-04-2025 06:47:06 - Trotinete 3 - Descarregamento: 100% → 95%
+10-04-2025 06:47:14 - Trotinete 3 - Estacionada
+10-04-2025 06:47:14 - Trotinete 3 - Carregamento: 95% → 100%
+10-04-2025 06:47:14 - Trotinete 3 - Carregamento concluído

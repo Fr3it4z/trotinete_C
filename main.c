@@ -10,6 +10,8 @@
 #include <unistd.h>   // Para sleep() no Linux/macOS
 #endif
 
+#define ESP32_ATIVO 0  // Altera para 1 quando tiveres o ESP32 ligado
+
 typedef struct {
     int nivelBateria;
     int numeroTrotinete;
@@ -73,6 +75,59 @@ void simular_carregamento(Trotinete *t, int tamanho) {
             registar_log_trotinete(t[i].numeroTrotinete, "Carregamento concluído");
         }
     }
+}
+
+void receberDadosESP32(Trotinete trotinete[], int tamanho) {
+    if (!ESP32_ATIVO) {
+        printf("[DEBUG] Comunicação com ESP32 desativada (ESP32_ATIVO = 0)\n");
+        return;
+    }
+    FILE *porta = fopen("/dev/ttyUSB0", "r");  // ou outro dispositivo, consoante o sistema
+    if (porta == NULL) {
+        perror("Erro ao abrir porta Bluetooth para leitura");
+        return;
+    }
+
+    char buffer[128];
+    if (fgets(buffer, sizeof(buffer), porta) != NULL) {
+        // Remover newline
+        buffer[strcspn(buffer, "\n")] = 0;
+        printf("[Bluetooth] Mensagem recebida: %s\n", buffer);
+
+        // Atualizar estados com base na mensagem
+        for (int i = 0; i < tamanho; i++) {
+            char nomeTrotinete[32];
+            snprintf(nomeTrotinete, sizeof(nomeTrotinete), "trotinete%d", trotinete[i].numeroTrotinete);
+            if (strstr(buffer, nomeTrotinete)) {
+                if (!trotinete[i].estadoEstacionamento) {
+                    trotinete[i].estadoEstacionamento = true;
+                    registar_log_trotinete(trotinete[i].numeroTrotinete, "Detetada como estacionada via ESP32");
+                }
+            } else {
+                if (trotinete[i].estadoEstacionamento) {
+                    trotinete[i].estadoEstacionamento = false;
+                    registar_log_trotinete(trotinete[i].numeroTrotinete, "Detetada como removida via ESP32");
+                }
+            }
+        }
+
+        guardar_estado_json(trotinete, tamanho);
+    }
+
+    fclose(porta);
+}
+
+void enviarComandoESP32(const char *comando) {
+    FILE *porta = fopen("/dev/rfcomm0", "w");
+    if (porta == NULL) {
+        perror("Erro ao abrir porta Bluetooth para escrita");
+        return;
+    }
+
+    fprintf(porta, "%s\n", comando); // Envia o comando
+    fclose(porta);
+
+    printf("[Bluetooth] Comando enviado: %s\n", comando);
 }
 
 
@@ -174,13 +229,15 @@ void menu(Trotinete trotinete[], int tamanho) {
 
     do {
         simular_descarregamento(trotinete, tamanho);
-        simular_carregamento(trotinete, tamanho); 
+        simular_carregamento(trotinete, tamanho);
+        receberDadosESP32(trotinete, tamanho);
         clear();
         printf("\n--- Menu ---\n");
         printf("1. Estacionar trotinete\n");
         printf("2. Alugar trotinete\n");
         printf("3. Listar trotinetes\n");
         printf("4. Sair\n");
+        printf("5. Reset ao sistema de carregamento\n");
         printf("Escolha uma opção: ");
 
         if (scanf("%d", &opcao) != 1) {
@@ -261,7 +318,10 @@ void menu(Trotinete trotinete[], int tamanho) {
             case 4: // Sair
                 printf("A sair...\n");
                 break;
-
+            case 5:
+                enviarComandoESP32("reset");
+                space();
+                break;            
             default:
                 printf("Opção inválida!\n");
                 space();
